@@ -229,6 +229,8 @@ testImplementation 'org.springframework.security:spring-security-test'
 * `filterChain()`  > url별, 권한별 인증, 인가 설정, 로그인, 로그아웃 후 이동할 url 지정
 * `authenticationManager()` > 인증관리자 관련 설정 : 사용자정보를 가져올 서비스지정. 패스워드 인코더 지정
 * 패스워드 인코더를 Bean으로 등록
+* @Configuration + @Bean 어노테이션으로 아래 객체들을 Bean 으로 등록한다.
+* WebSecurityCustomizer, SecurityFilterChain, AuthenticationManager, BCryptPasswordEncoder
 
 7. 회원가입을 처리할 `AddUserRequest.java`, `UserService.java`, `UserApiController.java` 생성
 8. 회원가입 뷰 컨트롤러, 뷰 파일 생성, `UserViewController.java`, `login.html`, `signup.html`, `articles.html`   
