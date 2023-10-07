@@ -394,10 +394,30 @@ testImplementation 'org.springframework.security:spring-security-test'
       * TokenProvier 테스트 클래스 생성 > `TokenProviderTest.java`
         ![캡처](https://github.com/ironmask431/springboot3-guide/assets/48856906/96c46c6f-e4c6-4072-8a5b-c5bc96c3de95)
 
-        
+   3. 리프레시 토큰 도메인 구현하기
+      * 리프레시 토큰은 DB에 저장하는 정보이므로 entity 와 repository 를 추가해준다.
+      * `RefreshToken.java`, `RefreshTokenRepository`
 
-        
+   4. 토큰 필터 구현하기
+      * `TokenAuthenticationFilter.java` (extends OncePerRequestFilter)
+      * OncePerRequestFilter : 1번의 request에 filter 처리를 하는 클래스
+      * 요청의 헤더값의 토큰을 확인하여 유효하면 securityContextHolder 에 인증정보를 저장함.
+      * securityContext 는 인증 객체를 저장하는 보관소임. 인증정보를 저장, 조회할 수 있다.
+      * securityContext 객체를 저장하는 객체가 securityContextHolder.
+      * Http Request 에서 액세스토큰값이 담긴 Authorization 헤더값을 가져온 뒤 엑세스토큰이 유효하다면 인증정보를 저장함.
 
+3. 리프레시 토큰 발급 API 구현하기
+   * refreshToken 을 받아 유효성 검증 후 새로운 accessToken을 발급해주는 api 개발 
+
+   1. 토큰 서비스 추가
+      * `UserService.java` 에 findById() 메소드 추가
+      * `RefreshTokenService.java` 생성 > 전달받은 리프레시 토큰을 db에서 조회해본다.
+      * `TokenService.java` > 리프레시토큰을 받아 유효성 검증하고, 신규 accessToken을 발급해준다.
+        
+   2. API 컨트롤러  추가
+      * request, response dto 객체 추가 - `CreateAccessTokenRequest.java`, `CreateAccessTokenResponse.java`
+      * api 컨트롤러 추가 - `TokenApiController.java`
+      * api 컨트롤러 테스트 추가 - `TokenApiControllerTest.java`
       
    
       
