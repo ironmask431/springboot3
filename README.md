@@ -152,8 +152,73 @@ class MemberControllerTest {
 }
 ```
 
+### 5. 데이터베이스 조작이 편해지는 ORM
+
+1. 데이터베이스란? - 셍략
    
-### 5. 블로그 기획하고 API만들기 
+2. ORM 이란? - java의 객체와 데이터베이스를 연결하는 프로그래밍 기법
+
+   ```
+   * ORM 의 장점과 단점
+
+   <장점>
+   1. sql을 직접 작성하지 않고 프로그래밍 언어로 데이터베이스 데이터 접근 가능
+   2. sql을 작성하지 않아도되므로 비즈니스 로직에 집중할 수 있다. 보다 객체지향적 개발 가능
+   3. 데이터베이스 시스템이 추상화 되어있어 DBMS가 변경되더라도 추가작업이 필요없다.
+   4. (기존 sqlMapper(myBatis) 방식은 DBMS가 바뀌면 쿼리도 모두 수정해줘야함.)
+   5. 객체와 테이블간 매핑 필드가 명확하기때문에 ERD 의존도가 낮춰지고, 유지보수가 편해진다.
+
+   <단점>
+   1. 프로젝트가 복잡해질수록 사용 난이도가 올라간다.
+   2. 복잡하고 무거운 쿼리는 ORM으로 해결하기 어렵다. (JPQL이나 QueryDsl을 통해 개선 가능)
+   ```
+
+3. JPA외 하이버네이트
+
+   * ORM에도 여러종류가 있다. java에서는 JPA를 표준 ORM으로 사용한다.
+   * JPA : 자바 객체와 데이터베이스를 연결해주는 인터페이스
+   * 하이버네이트 : JPA 인터페이스를 구현한 구현체. 내부적으로 JDBC API 사용
+
+   1. 엔티티 매니저란?
+      
+      * 엔티티를 관리. DB와 애플리케이션 사이에서 객체를 생성,수정,삭제 담당.
+        
+   3. 영속성 컨텍스트란?
+      
+      * JPA의 중요한 특징중 하나. 엔티티를 관리하는 가상의 공간
+
+        ```
+        * 영속성 컨텍스트의 특징 3가지
+
+        1. 1차캐시
+        - 영속성 컨텍스트 내부에 1차 캐시가 있음.
+        - 캐시의 키는 엔티티의 @Id
+        - 엔티티를 조회하면 캐시에서 먼저 조회하고 없으면 DB에서 조회함.
+        - 캐시된 엔티티를 조회할때는 DB를 거치지 않으므로 빠르다. 
+
+        2. 쓰기지연
+        - 쓰기지연은 트랜잭션이 커밋되기 전까지는 DB에 쿼리를 날리지 않다가
+        - 커밋하면 쿼리들을 한번에 실행하는 것을 말함.
+        - 적당한 묶음으로 쿼리를 요청할 수 있어 DB부담을 줄임(?)
+
+        3. 변경감지
+        - 트랜잭션을 커밋하면 1차캐시에 저장된 엔티티의 값과 현재 엔티티의 값을
+        - 비교하여 변경점이 있다면 자동으로 db에 쿼리를 날려 업데이트 처리한다.
+
+        4. 지연로딩
+        - 엔티티를 조회 시 엔티티 내에 연관된 엔티티들을 모두 한번에 조회 하지 않고,
+        - 연관된 내부엔티티에 접근 시 별도로 쿼리를 날려 조회한다.
+        - 한번에 조회하면 즉시로딩도 가능하다. (즉시로딩 사용 시 N+1 문제가 발생할 수 있다.) 
+        ```
+
+      * 위 특징들의 공통점은 모두 DB로의 접근을 최소화해 성능을 최적화 하고 개발자의 편의성 높임.
+
+4. SPRING DATA JPA
+
+   * JPA를 보다 편하게 사용하기 위해 스프링데이터에서 제공하는 인터페이스.
+   * 인터페이스에 CRUD를  포함한 여러 메서드가 포함되어 있음.
+   
+### 6. 블로그 기획하고 API만들기 
 
 1. domain(entity), requestDto, repository, service, restController 생성
 2. contorller 메소드의 반환 타입을 ResponseEntity로 감싸서 reponse 의 httpStatus를 설정할 수 있다.
@@ -204,6 +269,7 @@ ResultActions result = mockMvc.perform(post(url)
 ```
 8. blog CRUD Api 생성 + 테스트코드 완료
 
+### 7. 블로그 화면 구성하기 (PASS) 
    
 ### 8. 스프링 시큐리티로 로그인,로그아웃 회원가입 만들기
 
@@ -229,6 +295,8 @@ testImplementation 'org.springframework.security:spring-security-test'
 * `filterChain()`  > url별, 권한별 인증, 인가 설정, 로그인, 로그아웃 후 이동할 url 지정
 * `authenticationManager()` > 인증관리자 관련 설정 : 사용자정보를 가져올 서비스지정. 패스워드 인코더 지정
 * 패스워드 인코더를 Bean으로 등록
+* @Configuration + @Bean 어노테이션으로 아래 객체들을 Bean 으로 등록한다.
+* WebSecurityCustomizer, SecurityFilterChain, AuthenticationManager, BCryptPasswordEncoder
 
 7. 회원가입을 처리할 `AddUserRequest.java`, `UserService.java`, `UserApiController.java` 생성
 8. 회원가입 뷰 컨트롤러, 뷰 파일 생성, `UserViewController.java`, `login.html`, `signup.html`, `articles.html`   
@@ -394,10 +462,30 @@ testImplementation 'org.springframework.security:spring-security-test'
       * TokenProvier 테스트 클래스 생성 > `TokenProviderTest.java`
         ![캡처](https://github.com/ironmask431/springboot3-guide/assets/48856906/96c46c6f-e4c6-4072-8a5b-c5bc96c3de95)
 
-        
+   3. 리프레시 토큰 도메인 구현하기
+      * 리프레시 토큰은 DB에 저장하는 정보이므로 entity 와 repository 를 추가해준다.
+      * `RefreshToken.java`, `RefreshTokenRepository`
 
-        
+   4. 토큰 필터 구현하기
+      * `TokenAuthenticationFilter.java` (extends OncePerRequestFilter)
+      * OncePerRequestFilter : 1번의 request에 filter 처리를 하는 클래스
+      * 요청의 헤더값의 토큰을 확인하여 유효하면 securityContextHolder 에 인증정보를 저장함.
+      * securityContext 는 인증 객체를 저장하는 보관소임. 인증정보를 저장, 조회할 수 있다.
+      * securityContext 객체를 저장하는 객체가 securityContextHolder.
+      * Http Request 에서 액세스토큰값이 담긴 Authorization 헤더값을 가져온 뒤 엑세스토큰이 유효하다면 인증정보를 저장함.
 
+3. 리프레시 토큰 발급 API 구현하기
+   * refreshToken 을 받아 유효성 검증 후 새로운 accessToken을 발급해주는 api 개발 
+
+   1. 토큰 서비스 추가
+      * `UserService.java` 에 findById() 메소드 추가
+      * `RefreshTokenService.java` 생성 > 전달받은 리프레시 토큰을 db에서 조회해본다.
+      * `TokenService.java` > 리프레시토큰을 받아 유효성 검증하고, 신규 accessToken을 발급해준다.
+        
+   2. API 컨트롤러  추가
+      * request, response dto 객체 추가 - `CreateAccessTokenRequest.java`, `CreateAccessTokenResponse.java`
+      * api 컨트롤러 추가 - `TokenApiController.java`
+      * api 컨트롤러 테스트 추가 - `TokenApiControllerTest.java`
       
    
       
