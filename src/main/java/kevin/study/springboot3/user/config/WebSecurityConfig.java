@@ -34,8 +34,8 @@ public class WebSecurityConfig {
                    .requestMatchers("/login", "/signup", "/user").permitAll() //해당경로는 인증,인가 없이 접근가능
                    .anyRequest().authenticated() // 그외 페이지 설정 - 인증이 필요함.
                    .and()
-                   .formLogin() //로그인 페이지 경로 설정
-                   .loginPage("/login")
+                   .formLogin() //form 로그인 사용
+                   .loginPage("/login")//로그인 페이지 경로 설정
                    .defaultSuccessUrl("/articles") //로그인 성공시 이동할 url
                    .and()
                    .logout() // 로그아웃 설정
