@@ -17,7 +17,7 @@ import java.util.List;
 public class BlogApiController {
     private final BlogService blogService;
 
-    @PostMapping("/api/articles")
+    @PostMapping("/api/article")
     public ResponseEntity<Article> addArticle(@RequestBody ArticleRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                              .body(blogService.save(request));
@@ -38,6 +38,7 @@ public class BlogApiController {
 
     @DeleteMapping("/api/article/{id}")
     public ResponseEntity<Void> deleteArticle(@PathVariable Long id) {
+        blogService.delete(id);
         return ResponseEntity.ok().build();
     }
 

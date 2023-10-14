@@ -1,7 +1,6 @@
-package kevin.study.springboot3.blogView.controller;
+package kevin.study.springboot3.blog.controller;
 
 
-import kevin.study.springboot3.blog.domain.Article;
 import kevin.study.springboot3.blog.dto.ArticleResponse;
 import kevin.study.springboot3.blog.service.BlogService;
 import lombok.RequiredArgsConstructor;

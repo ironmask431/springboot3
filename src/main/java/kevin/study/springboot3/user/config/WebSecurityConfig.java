@@ -36,7 +36,7 @@ public class WebSecurityConfig {
                    .and()
                    .formLogin() //form 로그인 사용
                    .loginPage("/login")//로그인 페이지 경로 설정
-                   .defaultSuccessUrl("/articles") //로그인 성공시 이동할 url
+                   .defaultSuccessUrl("/articles", true) // true 추가해주지 않으면 로그인후 해당 URL로 이동이 안됨.
                    .and()
                    .logout() // 로그아웃 설정
                    .logoutSuccessUrl("/login") //로그아웃 성공시 이동할 url
