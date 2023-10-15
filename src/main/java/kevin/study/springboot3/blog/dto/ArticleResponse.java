@@ -9,10 +9,13 @@ import java.time.LocalDateTime;
 
 @Getter
 public class ArticleResponse {
-    private final Long id;
-    private final String title;
-    private final String content;
-    private final LocalDateTime createdAt;
+    private Long id;
+    private String title;
+    private String content;
+    private LocalDateTime createdAt;
+
+    public ArticleResponse() {
+    }
 
     @Builder
     public ArticleResponse(Article article) {
