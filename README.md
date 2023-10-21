@@ -534,7 +534,7 @@ testImplementation 'org.springframework.security:spring-security-test'
          &response_type=code
          &scope=profie
 
-         * client_id : 인증서버가 클라이언트에 할당한 고유 식별자.
+         * client_id : 인증서버가 클라이언트에 할당한 고유 식별자. Oauth에 서비스등록할때 생성함.
          * redirect_id : 로그인 성공시 이동할 애플리케이션 URL
          * response_type : 애플리케이션이 제공받길 원하는 응답타입 (code : 인증코드)
          * scope : 제공받고자 하는 리소스오너의 정보목록
@@ -563,7 +563,44 @@ testImplementation 'org.springframework.security:spring-security-test'
 
          ```
          * 인증코드를 받은 후 애플리케이션 -> 구글로 액세스토큰을 요청함.
-         
+
+         <요청예시>
+         [POST] google-authorization-server.example/authorize
+         {
+            "client_id" : "123456asd",
+            "client_secret" : "aabb1234eee",
+            "redirect_url" : "http://localhost:8080/myapp",
+            "grant_type" : "authorization_code",
+            "code" : "dddff333kfnfn"
+         }
+
+         * client_secret : Oauth 서버에 서비스등록할때 제공받는 비밀키
+
+         <응답예시>
+         {
+            "access_token" : "asd123123wwe",
+            "token_type" : "Bearer",
+            "expires_in" : 3600,
+            "scope" : "openid profile",
+            ..... 생략
+         }
+         ```
+
+      5. 액세스 토큰으로 API 응답 반환
+
+         ```
+         이제 제공받은 엑세스토큰으로 리소스오너의 정보를 가져 올 수 있습니다.
+         정보가 필요할 때마다 리소스 서버에 api호출을 통해 정보를 가져옵니다.
+
+         <요청예시>
+         [GET] google-authorization-server.example/user-info
+         Header: Authorization: Bearer asd123123wwe
+         ```
+
+   3. 쿠키란? : 생략
+
+2. 토큰 발급 받기
+
          
       
 
