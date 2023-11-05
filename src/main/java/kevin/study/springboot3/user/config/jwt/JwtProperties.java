@@ -5,7 +5,8 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-//프로퍼티값이 설정되려면 @Setter가 반드시 있어야 한다.
+//application.yml 에 설정한
+//프로퍼티값이 클래스에 설정되려면 @Setter가 반드시 있어야 한다.
 @Setter
 @Getter
 @Component

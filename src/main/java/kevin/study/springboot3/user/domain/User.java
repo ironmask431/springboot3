@@ -30,11 +30,16 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
+    //유저 이름
+    @Column(name = "nickname", unique = true)
+    private String nickname;
+
     @Builder
-    public User(Long id, String email, String password) {
+    public User(Long id, String email, String password, String nickname) {
         this.id = id;
         this.email = email;
         this.password = password;
+        this.nickname = nickname;
     }
 
     @Override //사용자의 권한목록을 반환
@@ -70,5 +75,11 @@ public class User implements UserDetails {
     @Override //계정 사용가능한지 확인
     public boolean isEnabled() {
         return true; // true = 사용가능
+    }
+
+    //유저 이름 변경
+    public User update(String nickname){
+        this.nickname = nickname;
+        return this;
     }
 }
