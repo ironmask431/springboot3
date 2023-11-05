@@ -601,6 +601,26 @@ testImplementation 'org.springframework.security:spring-security-test'
 
 2. 토큰 발급 받기
 
+   1. google cloud console 에 로그인 후 > 프로젝트 생성 > API 및 서비스 > 사용자 인증정보
+   2. 승인된 redirection url 에 아래url 추가 : `http://localhost:8080/login/oauth2/code/google`
+   3. (실서버에 업로드하게되면 실서버 url도 추가해줘야함.)
+   4. oauth2 클라이언트 id를 만들고 클라이언트id 와 보안비밀번호를 복사
+   5. `application.yml` 에 해당 정보를 기재힌다 > 깃헙에 올라가면 절대안됨! 보안유지! .gitignore에 추가한다.
+
+      ```java
+        #oauth2 설정 - github 에 올라가지않도록 주의 필요.
+        security:
+          oauth2:
+            client:
+              registration:
+                google:
+                  client-id: 여기에 입력 
+                  client-secret: 여기에 입력
+                  scope:
+                    - email
+                    - profile
+      ```
+      
          
       
 
