@@ -41,8 +41,11 @@ dependencies {
 	// xml문서와 JAVA객체 매핑 자동화  // mavenRepository 에서 조회
 	implementation 'javax.xml.bind:jaxb-api:2.3.1'
 
+	//oauth2 client
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
