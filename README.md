@@ -638,8 +638,31 @@ testImplementation 'org.springframework.security:spring-security-test'
    2. 쿠키관리 클래스 구현 > `CookieUtil.java`
       - 쿠키추가, 쿠키삭제, 객체를 쿠키로 변환, 쿠키를 객체로 변환 하는 기능
 
-   4. OAuth2 서비스 구현 > `OAuth2UserCustomService.java`
-      - loadUser()를 통해 Oauth 요청으로 받은 사용자정보를 읽고 DB에 없으면 저장, 있으면 name 수정 
+   3. OAuth2 서비스 구현 > `OAuth2UserCustomService.java`
+      - loadUser()를 통해 Oauth 요청으로 받은 사용자정보를 읽고 DB에 없으면 저장, 있으면 name 수정
+     
+   4. OAuth2 설정 파일 작성하기
+      - JWT + Oauth2 로그인 방식을 사용하려면 기존 스프링시큐리티 로그인 설정과 다른 설정을 사용해야함.
+      - 기존 폼로그인 방식을 적용했던 `WebSecurityConfig.java` 파일은 모두 주석처리
+
+
+      - `WebOAuthSecurityConfig.java` 추가
+      - Jwt + OAuth 인증 방식의 SecurityFilterChain filterChain() 메소드를 구현..
+  
+     
+      - `OAuth2AuthorizationRequestBasedOnCookieRepository.java` 추가
+      - Oauth2에 필요한 정보를 세션이 아닌 쿠키에 저장해서 쓸 수 있도록
+      - 인증요청과 관련된 상태를 저장할 저장소 구현.
+      - 권한 인증 흐름에서 클라이언트의 요청을 유지하는데 사용하는 AuthorizationRequestRepository
+      - 클래스를 구현해 쿠키를 사용하여 OAuth의 정보를 가져오고 저장하는 로직을 구현한다.
+  
+     
+      - `OAuth2SuccessHandler.java` 추가
+      - OAuth 인증 성공시 실행될 핸들러
+      - 스프링 시큐리티 기본로직은 successHandler 를 별도로 지정하지 않으면
+      - 로그인 성공 후 SimpleUrlAuthenticationSuccessHandler 를 사용함.
+      - 여기서는 토큰과 관련된 작업을 추가로 처리하기 위해 SimpleUrlAuthenticationSuccessHandler
+      - 를 상속받은 후 onAuthenticationSuccess() 메소드를 오버라이딩 해줌.
       
          
       
