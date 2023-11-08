@@ -12,10 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Transactional
     public Long save(AddUserRequest request) {
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         return userRepository.save(User.builder()
                                        .email(request.getEmail())
                                        .password(bCryptPasswordEncoder.encode(request.getPassword()))
@@ -25,6 +25,11 @@ public class UserService {
 
     public User findById(Long userId) {
         return userRepository.findById(userId)
+                             .orElseThrow(() -> new IllegalArgumentException("not found user"));
+    }
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
                              .orElseThrow(() -> new IllegalArgumentException("not found user"));
     }
 

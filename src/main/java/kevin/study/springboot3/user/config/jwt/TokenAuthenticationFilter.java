@@ -31,7 +31,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         //요청 헤더에서 Authorization 값을 조회한다.
         String authorizationHeader = request.getHeader(HEADER_AUTHRIZATION);
 
-        //접수다 제거
+        //접두사 제거
         String token = getAccessToken(authorizationHeader);
 
         //토큰 유효성 검사, 유효하면 인증정보 설정
