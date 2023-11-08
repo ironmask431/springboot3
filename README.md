@@ -649,6 +649,18 @@ testImplementation 'org.springframework.security:spring-security-test'
       - `WebOAuthSecurityConfig.java` 추가
         ```
         - Jwt + OAuth 인증 방식의 SecurityFilterChain filterChain() 메소드를 구현..
+
+        - <구현 내용>
+        1. 토큰 인증방식을 사용할 것이므로, 기존 폼로그인, 로그아웃 비활성화 시킨다.
+        2. 세션을 비활성화 시킨다.
+        - SessionCreationPolicy.Always : 스프링 시큐리티가 항상 세션 생성
+        - SessionCreationPolicy.IF_REQUIRED : 스프링 시큐리티가 필요 시 생성(default)
+        - SessionCreationPolicy.Never : 스프링 시큐리티가 생성하지 않지만 이미 존재하면 사용
+        - SessionCreationPolicy.Stateless: 스프링 시큐리티가 생성하지 않고 존재해도 사용하지 않음.
+        - → JWT 토큰방식을 사용할 때는 Stateless 정책을 사용한다.
+        3. 헤더를 확인할 커스텀 필터 추가 > TokenAuthenticationFilter
+        4. 토큰 재발급 요청 api 에는 permitAll 설정
+        5. oauth2 로그인 페이지, 핸들러, 유저서비스등.. 설정 복잡하다!!
         ```
   
       - `OAuth2AuthorizationRequestBasedOnCookieRepository.java` 추가
@@ -657,6 +669,11 @@ testImplementation 'org.springframework.security:spring-security-test'
          - 인증요청과 관련된 상태를 저장할 저장소 구현.
          - 권한 인증 흐름에서 클라이언트의 요청을 유지하는데 사용하는 AuthorizationRequestRepository
          - 클래스를 구현해 쿠키를 사용하여 OAuth의 정보를 가져오고 저장하는 로직을 구현한다.
+
+         - <구현기능>
+         1. Oauth 인증정보 쿠키를 읽어서 OAuth 인증객체로 변환 후 리턴.
+         2. OAuth2 인증객체를 직렬화하여 oauth2_auth_request 쿠키로 저장.
+         3. oauth2_auth_request 쿠키를 삭제
          ```
    
       - `OAuth2SuccessHandler.java` 추가
@@ -666,6 +683,11 @@ testImplementation 'org.springframework.security:spring-security-test'
         - 로그인 성공 후 SimpleUrlAuthenticationSuccessHandler 를 사용함.
         - 여기서는 토큰과 관련된 작업을 추가로 처리하기 위해 SimpleUrlAuthenticationSuccessHandler
         - 를 상속받은 후 onAuthenticationSuccess() 메소드를 오버라이딩 해줌.
+
+        - < 구현기능 >  
+        1. 인증 성공시 리프레시 토큰 생성, DB저장, 쿠키에 저장
+        2. 액세스 토큰 생성하여 URL param에 추가 (토큰을 클라이언트에 전달하기 위한..)
+        3. 인증 성공 후 기본페이지로 리다이렉트 
         ```
       
          
