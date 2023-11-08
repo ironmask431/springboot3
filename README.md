@@ -620,6 +620,26 @@ testImplementation 'org.springframework.security:spring-security-test'
                     - email
                     - profile
       ```
+
+3. 스프링 시큐리티로 OAuth2 구현하고 적용하기
+   - 쿠키 관리 class 구현
+   - Oauth2 에서 제공받은 인증객체로 사용자 정보를 저장, 가져오는 서비스 구현
+   - Oauth2 + jwt 방식으로 WebSecurityConfig 설정 수정
+   - Oauth2 로그인방식 뷰 구성
+
+
+   1. 의존성 추가하기
+      - `build.gradle` 에 Oauth2 의존성추가
+
+      ```
+      implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+      ```
+
+   2. 쿠키관리 클래스 구현 > `CookieUtil.java`
+      - 쿠키추가, 쿠키삭제, 객체를 쿠키로 변환, 쿠키를 객체로 변환 하는 기능
+
+   4. OAuth2 서비스 구현 > `OAuth2UserCustomService.java`
+      - loadUser()를 통해 Oauth 요청으로 받은 사용자정보를 읽고 DB에 없으면 저장, 있으면 name 수정 
       
          
       
