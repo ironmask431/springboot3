@@ -21,7 +21,6 @@ import java.time.Duration;
 
 /**
  * OAuth 인증 성공시 실행될 핸들러
- * <p>
  * 스프링 시큐리티 기본로직은 successHandler 를 별도로 지정하지 않으면
  * 로그인 성공 후 SimpleUrlAuthenticationSuccessHandler 를 사용함.
  * 여기서는 토큰과 관련된 작업을 추가로 처리하기 위해 SimpleUrlAuthenticationSuccessHandler
@@ -97,6 +96,5 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                                    .build()
                                    .toString();
     }
-
 
 }

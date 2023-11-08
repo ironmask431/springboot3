@@ -51,7 +51,12 @@ public class WebOAuthSecurityConfig {
             .logout()
             .disable();
 
-        //세션을 비활성화 시킨다.
+        //세션 정책 설정 : 세션을 비활성화 시킨다.
+//        SessionCreationPolicy.Always : 스프링 시큐리티가 항상 세션 생성
+//        SessionCreationPolicy.IF_REQUIRED : 스프링 시큐리티가 필요 시 생성(default)
+//        SessionCreationPolicy.Never : 스프링 시큐리티가 생성하지 않지만 이미 존재하면 사용
+//        SessionCreationPolicy.Stateless: 스프링 시큐리티가 생성하지 않고 존재해도 사용하지 않음.
+//        → 않음JWT 토큰방식을 사용할 때는 Stateless 정책을 사용한다.
         http.sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
@@ -67,13 +72,13 @@ public class WebOAuthSecurityConfig {
         //oauth2 로그인 페이지 설정
         http.oauth2Login()
             .loginPage("/login")
-            .authorizationEndpoint()
-            //authorization 요청과 관련된 상태를 쿠키에 저장?
+            .authorizationEndpoint() // 인가 엔드포인트..?
+            //쿠키에서 OAuth 인증정보 가져오기, 인증정보 쿠키에 저장하기를 수행..
             .authorizationRequestRepository(oAuth2AuthorizationRequestBasedOnCookieRepository())
             .and()
-            .successHandler(oAuth2SuccessHandler()) //인증성공시 실행할 핸들러
-            .userInfoEndpoint()
-            .userService(oAuth2UserCustomService);
+            .successHandler(oAuth2SuccessHandler()) //인증성공시 실행할 핸들러 - 리프레시, 액세스토큰발급, 쿠키저장, redirect 수행
+            .userInfoEndpoint() // 인증된 사용자의 클레임/속성에 접근할때 사용하는 엔드포인트,,?
+            .userService(oAuth2UserCustomService); //인증성공 시 oauth로 부터받은 유저정보를 객체로 저장하는 서비스 저장
 
         http.logout()
             .logoutSuccessUrl("/login");
