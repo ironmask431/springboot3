@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -18,9 +19,10 @@ public class BlogApiController {
     private final BlogService blogService;
 
     @PostMapping("/api/article")
-    public ResponseEntity<Article> addArticle(@RequestBody ArticleRequest request) {
+    public ResponseEntity<Article> addArticle(@RequestBody ArticleRequest request,
+                                              Principal principal) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                             .body(blogService.save(request));
+                             .body(blogService.save(request, principal.getName()));
         //반환 타입을 ResponseEntity로 감싸서 reponse 의 httpStatus를 설정할 수 있다.
     }
 

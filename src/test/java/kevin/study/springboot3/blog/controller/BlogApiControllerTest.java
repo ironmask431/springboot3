@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kevin.study.springboot3.blog.domain.Article;
 import kevin.study.springboot3.blog.dto.ArticleRequest;
 import kevin.study.springboot3.blog.repository.BlogRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -51,7 +52,7 @@ class BlogApiControllerTest {
     @DisplayName("블로그 글 추가 api 테스트")
     void addArticleTest() throws Exception {
         //given
-        final String url = "/api/articles";
+        final String url = "/api/article";
         final String title = "제목";
         final String content = "내용";
         final ArticleRequest request = ArticleRequest.builder()
@@ -84,8 +85,9 @@ class BlogApiControllerTest {
         final String url = "/api/articles";
         final String title = "제목";
         final String content = "내용";
+        final String author = "user1";
 
-        createSavedArticle(title, content);
+        createSavedArticle(title, content, author);
 
         //when & then
         mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON))
@@ -103,8 +105,9 @@ class BlogApiControllerTest {
 
         final String title = "제목";
         final String content = "내용";
+        final String author = "user1";
 
-        final Article savedArticle = createSavedArticle(title, content);
+        final Article savedArticle = createSavedArticle(title, content, author);
 
         //when
         ResultActions result = mockMvc.perform(get(url, savedArticle.getId()));
@@ -122,22 +125,24 @@ class BlogApiControllerTest {
         final String url = "/api/article/{id}";
         //pathVariable 형태의 URL도 아래와 mockMvc.perform() 에서 사용 가능
 
-        Article savedArticle = createSavedArticle("제목", "내용");
+        Article savedArticle = createSavedArticle("제목", "내용","user1");
 
+        Long articleId = savedArticle.getId();
         //when
-        mockMvc.perform(delete(url, savedArticle.getId()));
+        mockMvc.perform(delete(url, articleId));
 
         //then
-        List<Article> list = blogRepository.findAll();
+        Article article = blogRepository.findById(articleId)
+                                        .orElse(null);
 
-        assertThat(list).isNotEmpty();
+        Assertions.assertEquals(article, null);
     }
 
     @Test
     @DisplayName("블로그 글 수정 api 테스트")
     void updateArticleTest() throws Exception {
         //given
-        Article savedArticle = createSavedArticle("제목", "내용");
+        Article savedArticle = createSavedArticle("제목", "내용","user1");
 
         final String url = "/api/article/{id}";
         final String title = "수정된 제목";
@@ -165,10 +170,11 @@ class BlogApiControllerTest {
         assertThat(articles.getContent()).isEqualTo(content);
     }
 
-    private Article createSavedArticle(String title, String content) {
+    private Article createSavedArticle(String title, String content, String author) {
         Article article = Article.builder()
                                  .title(title)
                                  .content(content)
+                                 .author(author)
                                  .build();
         return blogRepository.save(article);
     }

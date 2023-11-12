@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 public class BlogService {
     private final BlogRepository blogRepository;
 
-    public Article save(ArticleRequest request) {
-        return blogRepository.save(request.toEntity());
+    public Article save(ArticleRequest request, String userName) {
+        return blogRepository.save(request.toEntity(userName));
     }
 
     public List<ArticleResponse> findAll() {
