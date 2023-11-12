@@ -72,6 +72,7 @@ class BlogApiControllerTest {
                                        .password("test")
                                        .build());
 
+        //인증객체를 저장하는 SecurityContext 에 테스트 유저를 입력
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities()));
     }

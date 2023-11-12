@@ -55,6 +55,9 @@ public class BlogService {
         return new ArticleResponse(article);
     }
 
+
+    //현재 인증객체 securityContext의 유저이름과 article의 등록자 이름을 비교함.
+    //(자신의 article만 수정, 삭제 가능하도록)
     private static void authorizeArticleAuthor(Article article){
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         if(!article.getAuthor().equals(username)){
