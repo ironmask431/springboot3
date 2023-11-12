@@ -687,10 +687,40 @@ testImplementation 'org.springframework.security:spring-security-test'
         - < 구현기능 >  
         1. 인증 성공시 리프레시 토큰 생성, DB저장, 쿠키에 저장
         2. 액세스 토큰 생성하여 URL param에 추가 (토큰을 클라이언트에 전달하기 위한..)
-        3. 인증 성공 후 기본페이지로 리다이렉트 
+        3. 인증관련 설정값, 쿠키제거 : 인증프로세스를 진행하면서 세션과 쿠키에 임시로 저장해둔 인증관련 데이터 제거
+        4. 인증 성공 후 기본페이지로 리다이렉트 
         ```
+
+   5. 글에 글쓴이 추가하기
+      - `Article.java` 에 String author 추가. 다른 연관 파일에도 추가 (+data.sql)
+      - `BlogApiController`에 신규등록 api 에 `Principal principal` 파라미터 추가.
+      - SecurityContext 에 등록되어 있는(로그인한) 현재 유저의 이름을 Principal에서 받아온다.
+        ```java
+        @PostMapping("/api/articles")
+        public ResponseEntity<Article> addArticle(@RequestBody ArticleRequest request,
+                                                 Principal principal) {
+           return ResponseEntity.status(HttpStatus.CREATED)
+                                .body(blogService.save(request, principal.getName()));
+        }
+        ```
+
+   6. OAuth 뷰 구성하기
+      - `UserViewController.java` > return "login" > return "oauthLogin" 으로 변경
+      - 구글 로그인버튼 다운로드 > /resources/static/img 에 저장 > google.png
+      - `oauthLogin.html`, `token.js` 추가
+      - `articleList.html`, `article.js` 수정
+      - `BlogService.java` > 수정 : update, delete 시 로그인사용자와 유저가 동일유저인지 확인로직 추가.
+      ```java
+       //현재 인증객체 securityContext의 유저이름과 article의 등록자 이름을 비교함.
+       //(자신의 article만 수정, 삭제 가능하도록)
+       private static void authorizeArticleAuthor(Article article){
+           String username = SecurityContextHolder.getContext().getAuthentication().getName();
+           if(!article.getAuthor().equals(username)){
+               throw new IllegalArgumentException("not authorized");
+           }
+       }
+      ``` 
       
-         
       
 
       
