@@ -22,7 +22,7 @@ public class BlogViewController {
     public String getArticles(Model model) {
         List<ArticleResponse> articles = blogService.findAll();
         model.addAttribute("articles", articles);
-        return "articles";
+        return "articleList";
     }
 
     @GetMapping("/articles/{id}")

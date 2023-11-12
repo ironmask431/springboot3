@@ -18,7 +18,7 @@ import java.util.List;
 public class BlogApiController {
     private final BlogService blogService;
 
-    @PostMapping("/api/article")
+    @PostMapping("/api/articles")
     public ResponseEntity<Article> addArticle(@RequestBody ArticleRequest request,
                                               Principal principal) {
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -38,13 +38,13 @@ public class BlogApiController {
                              .body(blogService.findById(id));
     }
 
-    @DeleteMapping("/api/article/{id}")
+    @DeleteMapping("/api/articles/{id}")
     public ResponseEntity<Void> deleteArticle(@PathVariable Long id) {
         blogService.delete(id);
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/api/article/{id}")
+    @PutMapping("/api/articles/{id}")
     public ResponseEntity<ArticleResponse> updateArticle(@PathVariable Long id,
                                                          @RequestBody ArticleRequest request) {
         return ResponseEntity.ok()
