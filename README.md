@@ -719,9 +719,76 @@ testImplementation 'org.springframework.security:spring-security-test'
                throw new IllegalArgumentException("not authorized");
            }
        }
-      ``` 
+      ```
+
+4. OAuth 실행테스트
+
+   1. 구동 후 localhost:8080/login 접속
       
-      
+      ![001](https://github.com/ironmask431/springboot3-guide/assets/48856906/856decca-1f3e-4c69-8b5e-1b2e89ea32cf)
+
+   2. 구글 로그인 진행
+
+      ![002](https://github.com/ironmask431/springboot3-guide/assets/48856906/1d16101e-83bc-4175-9d8f-610d71ff0bac)
+
+   3. 로그인 성공후 로컬스토리지에는 accessToken,  쿠키에는 refreshToken 이 저장된것을 확인할 수 있다.
+
+      ![003](https://github.com/ironmask431/springboot3-guide/assets/48856906/23b01142-bb3a-4c83-890c-05d3de0dba8b)
+
+      ![004](https://github.com/ironmask431/springboot3-guide/assets/48856906/1570a39a-4b4e-40d5-9ff8-28ba6e67a667)
+
+   4. 글 등록, 수정, 삭제 정상 테스트
+   5. accessToken을 삭제하고 글 등록 시 refreshToken 을 이용해 새로운 accessToken이 발급되는 것을 확인
+
+      ![005](https://github.com/ironmask431/springboot3-guide/assets/48856906/64959477-1b87-4720-ba60-d425065a81b1)
+
+      ![006](https://github.com/ironmask431/springboot3-guide/assets/48856906/9f6a4d17-6f8e-4982-b595-7924a336417d)
+
+5. `BlogApiControllerTest.java` 테스트코드 오류 수정
+
+    1. 글 신규 등록 시 principal 객체에서 사용자 이름을 조회하는 부분이 추가 되었으므로 principal mock객체 추가
+       ```java
+       @Mock
+       Principal principal;
+       .... 
+       when(principal.getName()).thenReturn("username");
+       ```
+
+   2. 글 수정, 삭제 시 SecurityContext 에서 인증된 유저와 글의 작성자를 확인하는 로직이 추가되었으므로
+       SecurityContext에 인증된 유저를 등록해준다. + 테스트용 article 생성 시 작성자를 해당유저로 생성함.
+
+       ```java
+       User user;
+
+       @BeforeEach
+       void setSecurityContext(){
+           userRepository.deleteAll();
+           user = userRepository.save(User.builder()
+                                          .email("user@gmail.com")
+                                          .password("test")
+                                          .build());
+   
+           //인증객체를 저장하는 SecurityContext 에 테스트 유저를 입력
+           SecurityContext context = SecurityContextHolder.getContext();
+           context.setAuthentication(new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities()));
+       }
+
+       ....
+
+       private Article createSavedArticle(String title, String content) {
+           Article article = Article.builder()
+                                    .title(title)
+                                    .content(content)
+                                    .author(user.getUsername())
+                                    .build();
+           return blogRepository.save(article);
+       }
+       ```
+
+
+
+
+
 
       
 
