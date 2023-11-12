@@ -719,6 +719,14 @@ testImplementation 'org.springframework.security:spring-security-test'
                throw new IllegalArgumentException("not authorized");
            }
        }
+
+       //2번째 방법. 컨트롤러에서 부터 Principal 객체를 파라미터로 받아서 확인
+       private static void authorizeArticleAuthor_2(Article article, Principal principal){
+           String username = principal.getName();
+           if(!article.getAuthor().equals(username)){
+               throw new IllegalArgumentException("not authorized");
+           }
+       }
       ```
 
 4. OAuth 실행테스트
