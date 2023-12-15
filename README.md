@@ -792,7 +792,12 @@ testImplementation 'org.springframework.security:spring-security-test'
            return blogRepository.save(article);
        }
        ```
+### 11. AWS에 프로젝트 배포하기 
 
+11.1 사전 지식 : AWS
+
+
+   
 
 
 
