@@ -39,8 +39,9 @@ public class BlogApiController {
     }
 
     @DeleteMapping("/api/articles/{id}")
-    public ResponseEntity<Void> deleteArticle(@PathVariable Long id) {
-        blogService.delete(id);
+    public ResponseEntity<Void> deleteArticle(@PathVariable Long id,
+                                              Principal principal) {
+        blogService.delete(id, principal);
         return ResponseEntity.ok().build();
     }
 

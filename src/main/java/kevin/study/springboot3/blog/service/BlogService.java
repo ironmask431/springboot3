@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,10 +38,10 @@ public class BlogService {
     }
 
     @Transactional
-    public void delete(Long id) {
+    public void delete(Long id, Principal principal) {
         Article article = blogRepository.findById(id)
                                         .orElseThrow(() -> new IllegalArgumentException("not found id : " + id));
-        authorizeArticleAuthor(article);
+        authorizeArticleAuthor_2(article, principal);
         blogRepository.delete(article);
     }
 
@@ -60,6 +61,15 @@ public class BlogService {
     //(자신의 article만 수정, 삭제 가능하도록)
     private static void authorizeArticleAuthor(Article article){
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        if(!article.getAuthor().equals(username)){
+            throw new IllegalArgumentException("not authorized");
+        }
+    }
+
+    //현재 인증객체 securityContext의 유저이름과 article의 등록자 이름을 비교함.
+    //2번째 방법. Principal 객체를 파라미터로 받아서 확인
+    private static void authorizeArticleAuthor_2(Article article, Principal principal){
+        String username = principal.getName();
         if(!article.getAuthor().equals(username)){
             throw new IllegalArgumentException("not authorized");
         }
