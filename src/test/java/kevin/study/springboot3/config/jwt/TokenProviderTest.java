@@ -12,12 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.util.Date;
 import java.util.Map;
 
 @SpringBootTest
+@Transactional
 public class TokenProviderTest {
     @Autowired
     private TokenProvider tokenProvider;

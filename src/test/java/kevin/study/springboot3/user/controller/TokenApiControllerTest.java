@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Map;
@@ -27,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 class TokenApiControllerTest {
     @Autowired
     MockMvc mockMvc;
@@ -60,7 +62,7 @@ class TokenApiControllerTest {
 
         User testUser = userRepository.save(User.builder()
                                                 .id(1L)
-                                                .email("test@naaver.com")
+                                                .email("test@naver.com")
                                                 .password("test")
                                                 .build());
 

@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -24,6 +25,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 //spring context에 등록된 빈 들을 가져와서 테스트에서 사용하려면 이 어노테이션이 필요하다.
 @AutoConfigureMockMvc
 //MockMvc를 생성하고 구성해줌. MockMvc 는 컨트롤러 api를 테스트할때 사용
+@Transactional
+//위 어노테이션 추가 시 테스트중 repository를 통한 Db변경내역을 모두 rollback 처리한다.
 class MemberControllerTest {
 
     @Autowired
