@@ -59,6 +59,10 @@ class BlogApiControllerTest {
 
     User user;
 
+    private String userEmail = "user@gmail.com";
+
+    private String userPassword = "test";
+
     @BeforeEach
     void mockMvcSetup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
@@ -70,8 +74,8 @@ class BlogApiControllerTest {
     void setSecurityContext(){
         userRepository.deleteAll();
         user = userRepository.save(User.builder()
-                                       .email("user@gmail.com")
-                                       .password("test")
+                                       .email(userEmail)
+                                       .password(userPassword)
                                        .build());
 
         //인증객체를 저장하는 SecurityContext 에 테스트 유저를 입력
@@ -94,7 +98,7 @@ class BlogApiControllerTest {
         //request 객체를 String (JSON 형태)으로 직렬화
         final String requestBody = objectMapper.writeValueAsString(request);
 
-        when(principal.getName()).thenReturn("username");
+        when(principal.getName()).thenReturn(userEmail);
 
         //when
         ResultActions result = mockMvc.perform(post(url)
@@ -123,7 +127,8 @@ class BlogApiControllerTest {
         createSavedArticle(title, content);
 
         //when & then
-        mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get(url)
+                       .accept(MediaType.APPLICATION_JSON))
                .andExpect(status().isOk())
                .andExpect(jsonPath("$[0].title").value(title))
                .andExpect(jsonPath("$[0].content").value(content));
@@ -160,8 +165,12 @@ class BlogApiControllerTest {
         Article savedArticle = createSavedArticle("제목", "내용");
 
         Long articleId = savedArticle.getId();
+
+        when(principal.getName()).thenReturn(userEmail);
+
         //when
-        mockMvc.perform(delete(url, articleId));
+        mockMvc.perform(delete(url, articleId)
+                .principal(principal));
 
         //then
         Article article = blogRepository.findById(articleId)
