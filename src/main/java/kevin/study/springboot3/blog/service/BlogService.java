@@ -19,10 +19,12 @@ import java.util.stream.Collectors;
 public class BlogService {
     private final BlogRepository blogRepository;
 
+    @Transactional
     public Article save(ArticleRequest request, String userName) {
         return blogRepository.save(request.toEntity(userName));
     }
 
+    @Transactional(readOnly = true)
     public List<ArticleResponse> findAll() {
         List<ArticleResponse> responses = blogRepository.findAll()
                                                         .stream()
@@ -31,6 +33,7 @@ public class BlogService {
         return responses;
     }
 
+    @Transactional(readOnly = true)
     public ArticleResponse findById(Long id) {
         Article article = blogRepository.findById(id)
                                         .orElseThrow(() -> new IllegalArgumentException("not found id : " + id));
